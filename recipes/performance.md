@@ -206,11 +206,16 @@ Aprendizados de aplicações reais:
   SSIMULACRA 2, 90 é visualmente sem perda num teste de alternância e 80 é imperceptível lado a
   lado). Normal map: erro angular depois de renormalizar, porque o que se vê é a luz. Material e
   máscara: o canal que o shader lê. Olhe o pior bloco além da média: a média esconde perda local.
-- Malhas: compressão sem simplificar, com a precisão de posição, UV e normal escolhida pelo erro
-  máximo medido. Não descarte atributo (cor de vértice, segundo UV, morph target) para ganhar bytes.
+- Malhas: compressão sem simplificar, com a precisão de UV e normal escolhida pelo erro máximo
+  medido e posições exatas. Uma fração de milímetro na posição não se vê, mas muda a caixa da peça, e
+  o jogo que decide por limite (corte de teto, colisão, altura) troca de lado a peça que está nele.
+  Não descarte atributo (cor de vértice, segundo UV, morph target) para ganhar bytes.
 - Verifique N de N decodificando o resultado. Mantenha os originais e um interruptor para jogar
   com eles. A prova final é a captura no render, antes × agora, na mesma pose, com todo o tempo
   congelado (relógio, tempo de shader, partículas) e com a captura conferida antes de confiar na métrica.
+  O carregador novo também entra na comparação: trocar o caminho de carga pode mudar convenções que
+  o original herdava (orientação vertical da imagem, espaço de cor, repetição), e isso aparece no
+  render mesmo com cada arquivo dentro da régua.
 - Invalida a conclusão: régua medida só na textura (o render decide); mapa de dados julgado por
   métrica de cor; perda da compressão em bloco na GPU, que a régua da textura não mede.
 - Ferramenta: [package assets3d](../packages/assets3d/README.md) (conversão, verificação e relatório).

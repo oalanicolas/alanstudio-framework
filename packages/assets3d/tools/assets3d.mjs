@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Otimização de ativos 3D sem perda visível.
 //   assets3d textures <origem> [--saida DIR] [--perfil sem-perda-visivel|lado-a-lado] [--papeis papeis.json] [--regras regras.json] [--regua regua.json] [--lista arquivos.txt] [--jobs N] [--relatorio texturas.json] [--forcar]
-//   assets3d meshes   <origem> [--saida DIR] [--lista arquivos.txt] [--posicao 1e-5] [--uv-texels 0.1] [--textura 4096] [--normal-graus 0.1] [--relatorio malhas.json] [--forcar]
+//   assets3d meshes   <origem> [--saida DIR] [--lista arquivos.txt] [--posicao 0] [--uv-texels 0.1] [--textura 4096] [--normal-graus 0.1] [--relatorio malhas.json] [--forcar]
 //   assets3d verify   <origem> [--saida DIR] [--perfil ...] [--papeis ...] [--regras ...] [--regua ...] [--lista ...] [--relatorio verificacao.json]
 // --papeis: JSON {"caminho/relativo.png": "color|emissive|normal|material|mask"} vindo do manifesto do projeto; vence o sufixo.
 // --lista: arquivo de texto com um caminho relativo por linha; só esses são processados. O caminho é normalizado (a/../b), a grafia

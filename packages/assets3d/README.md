@@ -16,7 +16,7 @@ por PSNR com limites mais duros). O meshoptimizer vai vendorizado em `vendor/` (
 ```sh
 node tools/assets3d.mjs textures <origem> [--saida DIR] [--perfil sem-perda-visivel|lado-a-lado] \
   [--regras regras.json] [--regua regua.json] [--jobs N] [--relatorio texturas.json] [--forcar]
-node tools/assets3d.mjs meshes <origem> [--saida DIR] [--posicao 1e-5] [--uv-texels 0.1] \
+node tools/assets3d.mjs meshes <origem> [--saida DIR] [--posicao 0] [--uv-texels 0.1] \
   [--textura 4096] [--normal-graus 0.1] [--relatorio malhas.json] [--forcar]
 node tools/assets3d.mjs verify <origem> [--saida DIR] [--perfil ...] [--relatorio verificacao.json]
 node tools/assets3d.mjs report texturas.json malhas.json verificacao.json --saida pagina.html \
@@ -26,9 +26,12 @@ node tools/assets3d.mjs report texturas.json malhas.json verificacao.json --said
 - **textures**: cada `.png` vira `.avif` quando passa a régua e fica menor; senão fica no PNG, com o
   motivo no JSON. Busca binária do q (4 a 7 codificações por textura). Cache por hash do PNG, papel,
   régua e versão do codificador: a segunda execução só refaz o que mudou.
-- **meshes**: cada `.gltf` vira `.glb` com `EXT_meshopt_compression`. Só `POSITION`, `NORMAL`,
-  `TANGENT` e `TEXCOORD_n` da malha base recebem filtro com perda, cada um com a menor precisão que
-  respeita o limite; índices, cores, pesos, morph targets, animação e imagens embutidas vão sem perda.
+- **meshes**: cada `.gltf` vira `.glb` com `EXT_meshopt_compression`. Só `NORMAL`, `TANGENT` e
+  `TEXCOORD_n` da malha base recebem filtro com perda, cada um com a menor precisão que respeita o
+  limite; índices, cores, pesos, morph targets, animação e imagens embutidas vão sem perda. As posições
+  ficam exatas por padrão: arredondá-las move a caixa de cada peça em frações de milímetro, e um jogo
+  que decide por limite (corte de teto, colisão, altura) troca de lado a peça que está exatamente nele.
+  `--posicao 1e-5` (fração da diagonal) arredonda, quando o consumidor não decide nada pela geometria.
   O resultado é decodificado e comparado com o original antes de ser aceito. Draco, arquivos já
   comprimidos e `bufferView` usada por extensão desconhecida são recusados com o motivo.
 - **verify**: recalcula a régua para todo par original × convertido e sai com código 1 se algum falhar.

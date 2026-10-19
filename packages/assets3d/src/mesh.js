@@ -1,5 +1,5 @@
 // Malhas glTF → GLB com EXT_meshopt_compression, sem simplificar e sem descartar dados.
-// Só POSITION, NORMAL, TANGENT e TEXCOORD_n da malha base recebem filtro com perda, e a precisão de cada
+// Só NORMAL, TANGENT e TEXCOORD_n (e POSITION, se positionError > 0) da malha base recebem filtro com perda, e a precisão de cada
 // accessor é a menor que respeita o limite de erro medido; o resto (índices, cores, pesos, morph targets,
 // animação) vai sem perda. A verificação decodifica o resultado e compara com o original.
 import { MeshoptEncoder } from "../vendor/meshoptimizer/meshopt_encoder.js";
@@ -10,7 +10,10 @@ await MeshoptEncoder.ready;
 await MeshoptDecoder.ready;
 
 export const MESH_DEFAULTS = {
-  positionError: 1e-5, // fração da diagonal da caixa do accessor
+  // fração da diagonal da caixa do accessor; 0 = posições exatas. Arredondar posição move a caixa de cada peça em frações de
+  // milímetro, invisível na malha, mas o consumidor que decide por limite (corte de teto, colisão, classificação por altura)
+  // pode trocar de lado numa peça que está exatamente no limite. Por isso o padrão é exato; arredondar é escolha explícita.
+  positionError: 0,
   uvTexels: 0.1, // erro máximo de UV, em texels de uma textura de lado textureSize
   textureSize: 4096,
   normalDegrees: 0.1, // erro angular máximo de NORMAL e TANGENT

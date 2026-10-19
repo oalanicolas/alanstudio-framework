@@ -37,13 +37,29 @@ test("comprime sem perder triângulos, atributos, morph target nem imagem embuti
 
 test("a precisão escolhida respeita o limite, inclusive UV repetido até 40", (t) => {
   const { arq } = preparar(t);
-  const r = compressMesh(readGltf(arq), { uvTexels: 0.1, textureSize: 4096 });
+  const r = compressMesh(readGltf(arq), { positionError: 1e-5, uvTexels: 0.1, textureSize: 4096 });
   const uv = r.accessors.find((a) => a.uso === "TEXCOORD_0");
   assert.ok(typeof uv.bits === "number" && uv.erro <= 0.1 / 4096, JSON.stringify(uv));
   const pos = r.accessors.find((a) => a.uso === "POSITION");
   assert.ok(pos.erro <= pos.limite, JSON.stringify(pos));
   const nor = r.accessors.find((a) => a.uso === "NORMAL");
   assert.ok(nor.erro <= 0.1, JSON.stringify(nor));
+});
+
+// Defeito: posições arredondadas (1e-5 da diagonal) moveram em frações de milímetro a caixa de uma peça que estava exatamente
+// no limite do corte de teto de um jogo; a peça trocou de lado e sumiu, com a sombra dela. O padrão passou a ser exato.
+test("por padrão as posições saem exatas, e a caixa de cada accessor é a mesma", (t) => {
+  const { dir, arq } = preparar(t);
+  const original = readGltf(arq);
+  const r = compressMesh(original);
+  const pos = r.accessors.find((a) => a.uso === "POSITION");
+  assert.equal(pos.erro, 0, JSON.stringify(pos));
+  const glb = join(dir, "exata.glb");
+  writeFileSync(glb, r.glb);
+  const novo = readGltf(glb);
+  const i = novo.json.meshes[0].primitives[0].attributes.POSITION;
+  assert.deepEqual(novo.json.accessors[i].min, original.json.accessors[original.json.meshes[0].primitives[0].attributes.POSITION].min);
+  assert.equal(verifyMesh(original, novo, { positionError: 0 }).ok, true);
 });
 
 test("a verificação acusa um vértice fora do limite", (t) => {
