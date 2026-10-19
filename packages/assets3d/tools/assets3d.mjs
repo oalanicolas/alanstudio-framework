@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 // Otimização de ativos 3D sem perda visível.
-//   assets3d textures <origem> [--saida DIR] [--perfil sem-perda-visivel|lado-a-lado] [--regras regras.json] [--regua regua.json] [--jobs N] [--relatorio texturas.json] [--forcar]
-//   assets3d meshes   <origem> [--saida DIR] [--posicao 1e-5] [--uv-texels 0.1] [--textura 4096] [--normal-graus 0.1] [--relatorio malhas.json] [--forcar]
-//   assets3d verify   <origem> [--saida DIR] [--perfil ...] [--regras ...] [--regua ...] [--relatorio verificacao.json]
+//   assets3d textures <origem> [--saida DIR] [--perfil sem-perda-visivel|lado-a-lado] [--papeis papeis.json] [--regras regras.json] [--regua regua.json] [--lista arquivos.txt] [--jobs N] [--relatorio texturas.json] [--forcar]
+//   assets3d meshes   <origem> [--saida DIR] [--lista arquivos.txt] [--posicao 1e-5] [--uv-texels 0.1] [--textura 4096] [--normal-graus 0.1] [--relatorio malhas.json] [--forcar]
+//   assets3d verify   <origem> [--saida DIR] [--perfil ...] [--papeis ...] [--regras ...] [--regua ...] [--lista ...] [--relatorio verificacao.json]
+// --papeis: JSON {"caminho/relativo.png": "color|emissive|normal|material|mask"} vindo do manifesto do projeto; vence o sufixo.
+// --lista: arquivo de texto com um caminho relativo por linha; só esses são processados.
 //   assets3d report   <json...> --saida pagina.html [--titulo "..."] [--medicoes medicoes.json]
 // Sem --saida, o resultado fica ao lado do original (mesmo nome, extensão .avif ou .glb). Os originais nunca são alterados.
 import { createHash } from "node:crypto";
@@ -38,6 +40,19 @@ function argumentos(argv) {
 }
 
 const lerJson = (p) => (p ? JSON.parse(readFileSync(p, "utf8")) : undefined);
+const lerLista = (p) => (p ? new Set(readFileSync(p, "utf8").split(/\r?\n/).map((l) => l.trim().replace(/^\.?\//, "")).filter(Boolean)) : null);
+const PAPEIS_VALIDOS = new Set(["color", "emissive", "normal", "material", "mask"]);
+function lerPapeis(p) {
+  const m = lerJson(p);
+  if (!m) return null;
+  const out = new Map();
+  for (const [k, v] of Object.entries(m)) {
+    if (!PAPEIS_VALIDOS.has(v)) throw new Error(`papel inválido em ${p}: ${k} → ${v}`);
+    out.set(k.replace(/^\.?\//, ""), v);
+  }
+  return out;
+}
+const papelDe = (rel, papeis, regras) => (papeis?.has(rel) ? { role: papeis.get(rel), guessed: false } : roleFor(rel, regras));
 const hash = (x) => createHash("sha256").update(typeof x === "string" ? x : JSON.stringify(x)).digest("hex").slice(0, 16);
 const mb = (b) => (b / 1e6).toFixed(2);
 
@@ -89,7 +104,9 @@ async function texturas({ pos, op }) {
   if (!ferramentas) throw new Error("faltam avifenc e avifdec (libavif) no PATH");
   const regua = resolveRuler(lerJson(op.regua) ?? {}, { hasSsimulacra2: Boolean(ferramentas.ssimulacra2) && !op["sem-ssimulacra2"], profile: op.perfil ?? undefined });
   const regras = lerJson(op.regras) ?? [];
-  const pngs = andar(origem, (n) => /\.png$/i.test(n));
+  const papeis = lerPapeis(op.papeis);
+  const lista = lerLista(op.lista);
+  const pngs = andar(origem, (n) => /\.png$/i.test(n)).filter((p) => !lista || lista.has(relative(origem, p)));
   const cacheArq = join(saida ?? origem, ".assets3d-texturas.json");
   const cache = op.forcar ? {} : lerCache(cacheArq);
   const chaveRegua = hash([regua, ferramentas.avifenc, VERSAO]);
@@ -99,7 +116,7 @@ async function texturas({ pos, op }) {
     jobs,
     async (png) => {
       const rel = relative(origem, png);
-      const papel = roleFor(rel, regras);
+      const papel = papelDe(rel, papeis, regras);
       const avif = destino(origem, saida, png, ".avif");
       const sha = createHash("sha256").update(readFileSync(png)).digest("hex");
       const c = cache[rel];
@@ -139,7 +156,8 @@ async function malhas({ pos, op }) {
     textureSize: Number(op.textura ?? MESH_DEFAULTS.textureSize),
     normalDegrees: Number(op["normal-graus"] ?? MESH_DEFAULTS.normalDegrees),
   };
-  const arquivos = andar(origem, (n) => /\.gltf$/i.test(n) || (/\.glb$/i.test(n) && saida && saida !== origem));
+  const lista = lerLista(op.lista);
+  const arquivos = andar(origem, (n) => /\.gltf$/i.test(n) || (/\.glb$/i.test(n) && saida && saida !== origem)).filter((p) => !lista || lista.has(relative(origem, p)));
   const cacheArq = join(saida ?? origem, ".assets3d-malhas.json");
   const cache = op.forcar ? {} : lerCache(cacheArq);
   const chave = hash([opcoes, VERSAO]);
@@ -207,18 +225,21 @@ async function verificar({ pos, op }) {
   const ferramentas = await toolVersions();
   const regua = resolveRuler(lerJson(op.regua) ?? {}, { hasSsimulacra2: Boolean(ferramentas?.ssimulacra2) && !op["sem-ssimulacra2"], profile: op.perfil ?? undefined });
   const regras = lerJson(op.regras) ?? [];
-  const pares = andar(origem, (n) => /\.png$/i.test(n)).map((png) => ({ png, avif: destino(origem, saida, png, ".avif") })).filter((p) => existsSync(p.avif));
+  const papeis = lerPapeis(op.papeis);
+  const lista = lerLista(op.lista);
+  const naLista = (p) => !lista || lista.has(relative(origem, p));
+  const pares = andar(origem, (n) => /\.png$/i.test(n)).filter(naLista).map((png) => ({ png, avif: destino(origem, saida, png, ".avif") })).filter((p) => existsSync(p.avif));
   const jobs = Number(op.jobs) || Math.max(1, Math.floor(cpus().length / 2));
   const tex = ferramentas
     ? await emLote(pares, jobs, async ({ png, avif }) => {
         const rel = relative(origem, png);
-        const papel = roleFor(rel, regras).role;
+        const papel = papelDe(rel, papeis, regras).role;
         const r = await verifyTexture(png, avif, papel, { ruler: regua, ssimulacra2: !op["sem-ssimulacra2"] });
         return { arquivo: rel, role: papel, ...r };
       }, "verificação de texturas")
     : [];
   const mal = [];
-  for (const arq of andar(origem, (n) => /\.gltf$/i.test(n))) {
+  for (const arq of andar(origem, (n) => /\.gltf$/i.test(n)).filter(naLista)) {
     const glb = destino(origem, saida, arq, ".glb");
     if (!existsSync(glb)) continue;
     const v = verifyMesh(readGltf(arq), readGltf(glb), {
