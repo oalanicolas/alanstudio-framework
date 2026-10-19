@@ -35,6 +35,11 @@ node tools/assets3d.mjs report texturas.json malhas.json verificacao.json --said
 - **report**: página antes × agora gerada só dos JSON. `--medicoes` acrescenta números do jogo
   rodando: `{ "antes": {"downloadMB", "vramMB", "heapMB", "cargaS", "fps"}, "agora": {...}, "notas": "..." }`.
 
+`--papeis papeis.json` dá o papel de cada arquivo a partir do manifesto do projeto
+(`{"pasta/Wall_BC.png": "color"}`; papéis: `color`, `emissive`, `normal`, `material`, `mask`) e vence o
+sufixo; use quando o runtime decide o formato por papel. `--lista arquivos.txt` (um caminho relativo por
+linha) limita textures, meshes e verify aos arquivos que o jogo usa.
+
 Sem `--saida`, o resultado fica ao lado do original. Os originais nunca são alterados: o projeto
 escolhe no carregamento entre o `.avif`/`.glb` e o original, e deve manter um interruptor para jogar
 com os originais e comparar.
