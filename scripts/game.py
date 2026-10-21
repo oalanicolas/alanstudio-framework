@@ -2828,6 +2828,44 @@ def budget_percentile_source(project):
     return None
 
 
+def loading_reading(project, root=None, scenario=None):
+    project = Path(project)
+    root = Path(root) if root is not None else default_root()
+    entry = command_catalog()["commands"]["loading"]
+    scripts, manager = project_commands(project)
+    named = {
+        name: command for name, command in scripts.items()
+        if name in ("build", "test", "verify", "budget", "bench", "size", "loading")
+        or "loading" in name or name.startswith(("bench:", "budget:"))
+    }
+    return {
+        "schema_version": 1,
+        "command": "loading",
+        "project": str(project),
+        "exists": project.is_dir(),
+        "kind": identify(project),
+        "scenario": scenario,
+        "reference": str(FRAMEWORK / "commands/loading.md"),
+        "read_next": [str(FRAMEWORK / relative) for relative in entry["reads"]],
+        "context_command": shlex.join([
+            "python3", str(FRAMEWORK / "scripts/game.py"), "context", str(project),
+            "--focus", "performance", "--root", str(root),
+        ]),
+        "scripts": named,
+        "package_manager": manager,
+        "budget": budget_reading(project),
+        "executed": False,
+        "measured": False,
+        "optimized": False,
+        "quality_policy": "Preservar apresentação, áudio, conteúdo e comportamento aprovados.",
+        "scope": (
+            "Localiza o processo e ferramentas declaradas. Não executa scripts, mede, "
+            "converte ou altera o jogo. O agente segue commands/loading.md até a entrega "
+            "autorizada; reutiliza o contexto vigente em vez de repeti-lo."
+        ),
+    }
+
+
 def budget_reading(project):
     project = Path(project)
     try:
@@ -10690,6 +10728,12 @@ def main():
         help="artefato de orçamento que o projeto declara, sem medir",
     )
     budget_cmd.add_argument("project")
+    loading_cmd = commands.add_parser(
+        "loading", parents=[common],
+        help="processo de carregamento com qualidade preservada e ferramentas declaradas, sem executar",
+    )
+    loading_cmd.add_argument("project")
+    loading_cmd.add_argument("--scenario", help="cenário solicitado; não é uma observação ou medição")
     art_cmd = commands.add_parser(
         "art", parents=[common],
         help="paleta, tokens e art-bible vigentes, sem aprovar estilo",
@@ -10859,6 +10903,12 @@ def main():
             emit(save_reading(resolve(args.project, root)))
         elif args.action == "budget":
             emit(budget_reading(resolve(args.project, root)))
+        elif args.action == "loading":
+            project, resolution = resolve_project(args.project, root)
+            result = loading_reading(project, root, args.scenario)
+            if resolution:
+                result["resolution"] = resolution
+            emit(result)
         elif args.action == "art":
             emit(art_reading(resolve(args.project, root)))
         elif args.action == "content":

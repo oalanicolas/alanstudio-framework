@@ -54,7 +54,8 @@ uma decisão que mudaria o jogo, resolva essa lacuna sem inventar prioridade.
 | Jogador não entende ou trava no início | `clarify` ou `onboard` | `playtest` |
 | Perda de progresso, pausa ou interrupção frágil | `harden` | `audit` |
 | Outro dispositivo, público, sem som ou uma mão | `adapt` | `playtest` |
-| Engasgo, aquecimento ou carregamento ruim | `optimize` | confirmar qualidade visual |
+| Engasgo, aquecimento ou custo por quadro | `optimize` | confirmar qualidade visual |
+| Carregamento lento, página pesada, banda, cache ou primeiros minutos | `loading` | comparar apresentação, áudio e jogabilidade |
 | Escopo grande e irregular | `distill` | `shape` |
 | Novo trecho, inimigo ou item custa heroísmo | `content` | `produce` |
 | Alpha, beta, gold ou plano de produção | `produce` | `release` |

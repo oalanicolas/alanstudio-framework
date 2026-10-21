@@ -86,6 +86,7 @@ Escolha a lente pela superfície pedida, não pelo projeto inteiro:
 | `content [projeto] [família]` | Ampliar | Receita e pipeline repetíveis de conteúdo | [content](commands/content.md) |
 | `adapt [projeto] [dispositivo]` | Corrigir | Entrada, dispositivo e acessibilidade | [adapt](commands/adapt.md) |
 | `optimize [projeto] [cena]` | Corrigir | Estabilidade sob orçamento sem degradar arte | [optimize](commands/optimize.md) |
+| `loading [projeto] [cenário]` | Corrigir | Entrada leve, conteúdo por demanda e banda menor com qualidade preservada | [loading](commands/loading.md) |
 | `clarify [projeto] [cena]` | Corrigir | Legibilidade do estado por forma e movimento | [clarify](commands/clarify.md) |
 | `next [projeto]` | Produzir | Próxima ação derivada do estado no disco | [next](commands/next.md) |
 | `produce [projeto] [marco]` | Produzir | Plano e gates da fatia até o marco | [produce](commands/produce.md) |

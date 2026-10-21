@@ -6,6 +6,10 @@ comparação em condições equivalentes. A qualidade visual aprovada é o piso;
 otimizar é achar uma implementação mais eficiente do **mesmo** resultado. Receita:
 [performance](../recipes/performance.md).
 
+Quando o alvo é peso da página, tempo até jogar, banda, cache ou conteúdo por
+demanda, use [loading](loading.md), que conduz esse recorte e mantém os mesmos
+critérios de qualidade. Este comando continua cobrindo custo por quadro e engasgos.
+
 ## Escala
 
 `jam`: roda na máquina alvo declarada sem travar (`playable`). `product`:

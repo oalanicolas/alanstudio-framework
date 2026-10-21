@@ -236,7 +236,7 @@ efeito colateral.
 | Avaliar | `critique`, `audit`, `playtest` |
 | Refinar | `polish`, `feel`, `audio`, `harden`, `onboard`, `distill` |
 | Ampliar | `juice`, `visual`, `content` |
-| Corrigir | `adapt`, `optimize`, `clarify` |
+| Corrigir | `adapt`, `optimize`, `loading`, `clarify` |
 | Produzir | `next`, `produce`, `release` |
 
 O catálogo é [`commands/commands.json`](commands/commands.json): categoria,
@@ -261,6 +261,24 @@ Uma referência de comando é um orquestrador fino, não uma receita nova: diz q
 `context` rodar, qual receita ler, onde parar para o usuário, o que prova conclusão
 e o que não fazer ([contrato](commands/README.md)). As receitas continuam sendo
 selecionadas por `--focus`; o comando acrescenta o fluxo.
+
+### Otimizar carregamento e banda
+
+Use `$game-dev loading <projeto>` ou peça “otimize o carregamento deste jogo sem
+perder qualidade”. A função conduz medição por marco, rastreio de pedidos,
+preparação inicial, conteúdo/áudio por demanda, transporte, cache e contraprovas.
+Adapta o consumidor da engine; não impõe um codec ou limite universal. Método em
+[loading](commands/loading.md) e [receita de carregamento](recipes/loading.md).
+
+```sh
+python3 scripts/game.py loading /caminho/do/jogo --scenario "entrada e primeiros minutos"
+```
+
+O CLI localiza as leituras, scripts declarados e orçamento existente, sem executar
+ou alterar o jogo. O agente usa esse resultado e segue a função até implementar e
+comparar o recorte autorizado. Pode reutilizar o contexto já lido; encontrar um
+script não certifica uma otimização. Dados, medições e prova de qualidade permanecem
+no projeto consumidor.
 
 ## Contexto por foco
 

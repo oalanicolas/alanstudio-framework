@@ -67,6 +67,7 @@ economia de execução nem ganho posterior entre ferramentas.
 | --- | --- |
 | Ciclo de criação e critérios de decisão | [Workflow](creative-workflow.md), [processo](process.md) |
 | Diagnóstico, comparação e custo de uma técnica | [Performance](../recipes/performance.md) |
+| Entrada leve, working set inicial, áudio e I/O por demanda, transporte e cache | [Loading](../commands/loading.md) e [carregamento](../recipes/loading.md) |
 | Carregador, renderizador ou serialização de uma plataforma | Package de [web](../packs/platforms/web.md) ou [Unity](../packs/platforms/unity.md), conforme o caso |
 | Exportação, animação, buffers e proveniência | [Conteúdo](../recipes/content.md), [áudio](../recipes/audio.md) |
 | Gestão de módulos e extração de repositórios | [Ferramentas de workspace](workspace-binding.md#módulos) |

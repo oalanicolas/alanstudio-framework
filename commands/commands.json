@@ -143,6 +143,13 @@
       "foci": ["performance"],
       "reads": ["recipes/performance.md", "references/production-bar.md"]
     },
+    "loading": {
+      "category": "fix",
+      "description": "Otimizar entrada, tempo até jogar e banda sem perder qualidade: medir por marco, adiar engine e conteúdo não usado, preservar metadados e contratos de I/O, comprimir com integridade, conferir cache e comparar o resultado audiovisual e jogável.",
+      "argument_hint": "[projeto] [cenário ou primeiros minutos]",
+      "foci": ["performance", "content", "audio", "lifecycle"],
+      "reads": ["recipes/loading.md", "recipes/performance.md", "recipes/lifecycle.md", "packages/assets3d/README.md"]
+    },
     "clarify": {
       "category": "fix",
       "description": "Legibilidade do estado: onde estou, o que me ameaça, o que posso fazer — em movimento, por silhueta e forma antes de cor e texto; teste em escala de cinza e sessão muda. Use quando o jogador não entende o que aconteceu.",

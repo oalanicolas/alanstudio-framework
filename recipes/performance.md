@@ -20,6 +20,11 @@ Declare o orçamento antes de otimizar: dispositivo, resolução, cena represent
 tempo de quadro alvo, teto do pior percentil e tempo até jogar. Sem orçamento não
 existe “rápido o suficiente”, e cada medição vira opinião.
 
+Para entrada, banda, cache e conteúdo por demanda, siga a função
+[loading](../commands/loading.md) e a receita de [carregamento](loading.md).
+Ela separa página, menu, primeiro controle e sessão curta antes de escolher o que
+antecipar ou comprimir; a qualidade aprovada continua sendo o piso.
+
 Localize o gargalo no caminho real antes de alterar código. Distinga custo por
 quadro de evento pontual, porque as causas e as correções são diferentes:
 
