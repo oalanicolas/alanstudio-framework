@@ -6,6 +6,13 @@ de desenvolvimento, primeira execução fria, orçamento de tamanho e tempo até
 proveniência de tudo que embarca, registro de falha e reversão. Prepara e verifica;
 prepara o artefato. Receita: [release](../recipes/release.md).
 
+## Recuperação do envio
+
+O upload TUS consulta o offset confirmado após uma falha de rede antes de reenviar
+dados. A consulta também tenta novamente quando o DNS ou a conexão falha; ela não
+presume que o último lote foi perdido. As tentativas são limitadas e, se esgotadas,
+o deploy falha sem declarar publicação. Não há retomada entre processos encerrados.
+
 ## Crawlers em sites estáticos
 
 Em `workspace.json`, `deploy.block_ai_bots: true` ativa regras para GPTBot,

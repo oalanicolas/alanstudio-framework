@@ -497,5 +497,34 @@ class ResponseContractTests(unittest.TestCase):
         self.assertEqual(verify.call_args.args[2], ["index.html", "build.json", "api.php"])
 
 
+class UploadTests(unittest.TestCase):
+    def test_dns_failure_during_offset_recovery_keeps_confirmed_offset(self):
+        with tempfile.TemporaryDirectory() as folder:
+            archive = Path(folder) / "build.zip"
+            archive.write_bytes(b"abcdefgh")
+            methods = []
+            patches = []
+            outcomes = iter([{}, deploy.urllib.error.URLError("dns"),
+                             deploy.urllib.error.URLError("dns"), {"Upload-Offset": "4"},
+                             {"Upload-Offset": "8"}])
+
+            def request(req, timeout):
+                methods.append(req.method)
+                if req.method == "PATCH":
+                    patches.append((req.get_header("Upload-offset"), req.data))
+                outcome = next(outcomes)
+                if isinstance(outcome, Exception):
+                    raise outcome
+                response = mock.MagicMock()
+                response.__enter__.return_value.headers = outcome
+                return response
+
+            with mock.patch.object(deploy.urllib.request, "urlopen", side_effect=request), \
+                    mock.patch.object(deploy.time, "sleep"), mock.patch("builtins.print"):
+                self.assertEqual(deploy.tus_upload("https://example.test", "key", "rest", archive), "build.zip")
+            self.assertEqual(methods, ["POST", "PATCH", "HEAD", "HEAD", "PATCH"])
+            self.assertEqual(patches, [("0", b"abcdefgh"), ("4", b"efgh")])
+
+
 if __name__ == "__main__":
     unittest.main()

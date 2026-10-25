@@ -296,8 +296,15 @@ def tus_upload(url: str, auth: str, rest: str, file: Path) -> str:
                     if attempt == 2:
                         raise
                     time.sleep(3)
-                    with urllib.request.urlopen(urllib.request.Request(base, method="HEAD", headers=hdr), timeout=60) as r:
-                        offset = int(r.headers.get("Upload-Offset", offset))
+                    for probe in range(3):
+                        try:
+                            with urllib.request.urlopen(urllib.request.Request(base, method="HEAD", headers=hdr), timeout=60) as r:
+                                offset = int(r.headers.get("Upload-Offset", offset))
+                            break
+                        except (urllib.error.URLError, TimeoutError):
+                            if probe == 2:
+                                raise
+                            time.sleep(3)
             print(f"  upload {offset / 1e6:.1f}/{size / 1e6:.1f} MB", flush=True)
     return file.name
 
