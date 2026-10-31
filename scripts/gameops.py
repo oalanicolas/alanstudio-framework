@@ -10,6 +10,7 @@ deploy     publica na Hostinger o commit já publicado (cópia limpa, gates, bui
 """
 import argparse
 import fnmatch
+import codecs
 import json
 import os
 from pathlib import Path
@@ -19,6 +20,7 @@ import shutil
 import subprocess
 import tempfile
 import sys
+import threading
 import time
 import urllib.parse
 
@@ -497,17 +499,79 @@ def dead_paths(text, bases):
     return dead
 
 
-def added_lines(diff):
-    current, line_number = None, 0
-    for line in diff.splitlines():
+class AddedLinesScanner:
+    """Incremental equivalent of added_lines' historical splitlines state machine."""
+
+    def __init__(self):
+        self.current, self.line_number = None, 0
+
+    def feed(self, line):
         if line.startswith("+++ "):
-            current = line[6:] if line.startswith("+++ b/") else None
+            self.current = line[6:] if line.startswith("+++ b/") else None
         elif line.startswith("@@"):
             match = re.search(r"\+(\d+)", line)
-            line_number = int(match.group(1)) if match else 0
-        elif line.startswith("+") and current:
-            yield current, line_number, line[1:]
-            line_number += 1
+            self.line_number = int(match.group(1)) if match else 0
+        elif line.startswith("+") and self.current:
+            result = (self.current, self.line_number, line[1:])
+            self.line_number += 1
+            yield result
+
+
+def added_lines(diff):
+    """Compatibility API: yield added lines from an already-materialized diff."""
+    scanner = AddedLinesScanner()
+    for line in diff.splitlines():
+        yield from scanner.feed(line)
+
+
+class GitDiffError(RuntimeError):
+    def __init__(self, returncode, stderr):
+        self.returncode = returncode
+        self.stderr = stderr
+        detail = stderr.strip() or "sem detalhe em stderr"
+        super().__init__(f"git diff falhou (código {returncode}): {detail}")
+
+
+def stream_added_lines(repo, *args):
+    """Stream a Git diff through the same parser while retaining only stderr's bounded tail."""
+    try:
+        process = subprocess.Popen(
+            ["git", "-C", str(repo), *args], stdout=subprocess.PIPE, stderr=subprocess.PIPE,
+            text=True, errors="replace", env={**os.environ, "GIT_OPTIONAL_LOCKS": "0"})
+    except OSError as exc:
+        raise GitDiffError(-1, str(exc)) from exc
+
+    stderr_tail = {"text": ""}
+    tail_limit = 16_384
+
+    def drain_stderr():
+        decoder = codecs.getincrementaldecoder(process.stderr.encoding)(errors="replace")
+        while True:
+            raw = process.stderr.buffer.read1(8_192)
+            chunk = decoder.decode(raw, final=not raw)
+            if chunk:
+                stderr_tail["text"] = (stderr_tail["text"] + chunk)[-tail_limit:]
+            if not raw:
+                return
+
+    stderr_reader = threading.Thread(target=drain_stderr, name="gameops-git-stderr", daemon=True)
+    stderr_reader.start()
+    scanner = AddedLinesScanner()
+    try:
+        # Text mode matches subprocess.run(..., text=True, errors="replace").
+        # splitlines handles Unicode separators inside each physical Git line,
+        # preserving the old full-string parser's semantics without retaining
+        # the complete diff.
+        for physical_line in process.stdout:
+            for line in physical_line.splitlines():
+                yield from scanner.feed(line)
+    finally:
+        process.stdout.close()
+        returncode = process.wait()
+        stderr_reader.join()
+        process.stderr.close()
+    if returncode:
+        raise GitDiffError(returncode, stderr_tail["text"])
 
 
 def github_origin(repo):
@@ -521,19 +585,28 @@ def common_dir(repo):
 
 
 def borrowed_objects(repo):
-    """Pastas de objetos que um clone compartilhado (clone --shared, clean_copy) usa do original."""
+    """Pastas de objetos que um clone --shared usa do repositório de origem (objects/info/alternates)."""
     shared = common_dir(repo)
-    alternates = shared / "objects" / "info" / "alternates" if shared else None
-    if not (alternates and alternates.is_file()):
+    listing = shared / "objects" / "info" / "alternates" if shared else None
+    if not listing or not listing.is_file():
         return set()
-    return {Path(line).resolve() for line in alternates.read_text().splitlines() if line and not line.startswith("#")}
+    lines = [line.strip() for line in listing.read_text().splitlines()]
+    return {(shared / "objects" / line).resolve() for line in lines if line and not line.startswith("#")}
+
+
+def clone_source(repo):
+    """Checkout local de onde a cópia foi clonada (origin em caminho). De um módulo raso o --shared vira cópia
+    comum, sem alternates: aí só a origem diz de quem é a cópia."""
+    url = run_git(repo, "config", "--get", "remote.origin.url") or ""
+    path = Path(url[len("file://"):] if url.startswith("file://") else url)
+    return path.resolve() if url and path.is_absolute() and path.is_dir() else None
 
 
 def resolve_target(root, modules, name):
     """Devolve (checkout, rótulo, módulo, dono): dono é '.' ou o caminho do módulo no manifesto.
 
-    Aceita o hub ('.'), o id ou caminho de um módulo, ou o caminho de um worktree ou de uma cópia limpa
-    (clone compartilhado) deles."""
+    Aceita o hub ('.'), o id ou caminho de um módulo, ou o caminho de um worktree ou de uma cópia limpa deles
+    (clone compartilhado, reconhecido pelos objetos que usa do dono)."""
     root = Path(root).resolve()
     if name in (".", "hub", ""):
         return root, ".", None, "."
@@ -546,13 +619,13 @@ def resolve_target(root, modules, name):
     candidate = Path(name).expanduser()
     candidate = (candidate if candidate.is_absolute() else Path.cwd() / candidate).resolve()
     if candidate.is_dir() and (candidate / ".git").exists():
-        shared, borrowed = common_dir(candidate), borrowed_objects(candidate)
+        shared, borrowed, source = common_dir(candidate), borrowed_objects(candidate), clone_source(candidate)
         owners = [(".", None, root)] + [(item["path"], item, root / item["path"]) for item in modules]
         for owner, item, checkout in owners:
-            source = common_dir(checkout) if (checkout / ".git").exists() else None
-            if source and (source == shared or source / "objects" in borrowed):
+            own = common_dir(checkout) if (checkout / ".git").exists() else None
+            if own and (own == shared or own / "objects" in borrowed or source == checkout.resolve()):
                 return candidate, str(candidate), item, owner
-        raise ValueError(f"{candidate} não é worktree do hub nem de um módulo do workspace.")
+        raise ValueError(f"{candidate} não é worktree nem clone compartilhado do hub ou de um módulo do workspace.")
     raise ValueError(f"Repositório desconhecido: {name}. Use '.' para o hub, um id de workspace.py list "
                      "ou o caminho de um worktree ou de uma cópia limpa.")
 
@@ -668,20 +741,23 @@ def preflight(root, modules, target, push=False, max_mb=5, max_instruction_token
             if dead:
                 warn(f"{path}: {plural(len(dead), 'caminho citado não existe', 'caminhos citados não existem')}: "
                      + ", ".join(dead[:5]) + ("…" if len(dead) > 5 else ""))
-    diff = run_git(repo, "diff", *diff_args, "-U0", "--no-color", "--no-ext-diff") or ""
     captures, foreign = captured_paths(root), {}
-    for path, number, text in added_lines(diff):
-        where = f"{path}:{number}"
-        if ABSOLUTE_PATH.search(text):
-            if foreign_absolute_path(text, owner, path, captures):
-                foreign[path] = foreign.get(path, 0) + 1
-            else:
-                block(f"{where}: caminho absoluto da máquina ({ABSOLUTE_PATH.search(text).group(0)})")
-        for label_, pattern in SECRET_TEXT:
-            if pattern.search(text):
-                block(f"{where}: possível {label_}")
-        if CONFLICT_MARKER.match(text):
-            block(f"{where}: marcador de conflito")
+    try:
+        for path, number, text in stream_added_lines(
+                repo, "diff", *diff_args, "-U0", "--no-color", "--no-ext-diff"):
+            where = f"{path}:{number}"
+            if ABSOLUTE_PATH.search(text):
+                if foreign_absolute_path(text, owner, path, captures):
+                    foreign[path] = foreign.get(path, 0) + 1
+                else:
+                    block(f"{where}: caminho absoluto da máquina ({ABSOLUTE_PATH.search(text).group(0)})")
+            for label_, pattern in SECRET_TEXT:
+                if pattern.search(text):
+                    block(f"{where}: possível {label_}")
+            if CONFLICT_MARKER.match(text):
+                block(f"{where}: marcador de conflito")
+    except GitDiffError as exc:
+        block(f"não foi possível verificar as linhas adicionadas: {exc}")
     for path, count in sorted(foreign.items()):
         warn(f"{path}: {plural(count, 'linha', 'linhas')} com caminho absoluto de outra máquina, aceito por ser "
              "captura fiel (publication.captured_paths)")
@@ -811,8 +887,8 @@ def print_gates(report):
         print(f"\n{plural(report['failed'], 'verificação falhou', 'verificações falharam')}.")
 
 
-# Deploy: o commit já publicado no GitHub, montado numa cópia limpa (clone --shared), vai para o site da Hostinger.
-# O que está no ar é sempre um commit que existe no remoto; trabalho fora do commit não sobe.
+# Deploy: o commit já publicado no GitHub, montado numa cópia limpa (clone compartilhado, nunca worktree), vai para
+# o site da Hostinger. O que está no ar é sempre um commit que existe no remoto; trabalho fora do commit não sobe.
 
 DEPLOY_KEYS = {"domain", "dist", "spa", "build", "public", "env", "block_ai_bots"}
 
@@ -824,9 +900,9 @@ def deploy_config(module):
     if (not isinstance(config, dict) or not isinstance(config.get("domain"), str) or not config["domain"]
             or set(config) - DEPLOY_KEYS):
         raise ValueError(f"deploy inválido em {module['id']}: precisa de domain e aceita só "
-                         + ", ".join(sorted(DEPLOY_KEYS)))
+                         + ", ".join(sorted(DEPLOY_KEYS)) + " (block_ai_bots: true ou false)")
     if "block_ai_bots" in config and not isinstance(config["block_ai_bots"], bool):
-        raise ValueError(f"{module['id']}: deploy.block_ai_bots precisa ser booleano")
+        raise ValueError(f"{module['id']}: deploy.block_ai_bots precisa ser booleano (block_ai_bots: true ou false)")
     try:
         build_env.declared(config)
     except ValueError as exc:

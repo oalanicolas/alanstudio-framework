@@ -53,3 +53,34 @@ test("separa um canal e recusa o que não é PNG", () => {
   assert.equal(g.data[5], img.data[5 * 3 + 1]);
   assert.throws(() => readPngHeader(Buffer.from("não sou png, só texto comprido o bastante para o teste")), /não é PNG/);
 });
+
+test("lê PNG entrelaçado (Adam7) igual ao não entrelaçado", () => {
+  const assinatura = Buffer.from([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+  const chunk = (tipo, dados) => {
+    const len = Buffer.alloc(4);
+    len.writeUInt32BE(dados.length);
+    return Buffer.concat([len, Buffer.from(tipo, "latin1"), dados, Buffer.alloc(4)]);
+  };
+  const w = 13, hgt = 11, ch = 3;
+  const img = colorTexture(16, 3);
+  const px = (x, y) => [0, 1, 2].map((c) => img.data[(y * 16 + x) * 3 + c]);
+  const PASSES = [[0, 0, 8, 8], [4, 0, 8, 8], [0, 4, 4, 8], [2, 0, 4, 4], [0, 2, 2, 4], [1, 0, 2, 2], [0, 1, 1, 2]];
+  const partes = [];
+  for (const [xs, ys, dx, dy] of PASSES) {
+    for (let y = ys; y < hgt; y += dy) {
+      const linha = [0];
+      for (let x = xs; x < w; x += dx) linha.push(...px(x, y));
+      if (linha.length > 1) partes.push(Buffer.from(linha));
+    }
+  }
+  const ihdr = Buffer.alloc(13);
+  ihdr.writeUInt32BE(w, 0);
+  ihdr.writeUInt32BE(hgt, 4);
+  ihdr[8] = 8;
+  ihdr[9] = 2;
+  ihdr[12] = 1;
+  const png = Buffer.concat([assinatura, chunk("IHDR", ihdr), chunk("IDAT", deflateSync(Buffer.concat(partes))), chunk("IEND", Buffer.alloc(0))]);
+  const d = decodePng(png);
+  assert.equal(d.width, w);
+  for (let y = 0; y < hgt; y++) for (let x = 0; x < w; x++) assert.deepEqual(Array.from(d.data.subarray((y * w + x) * ch, (y * w + x + 1) * ch)), px(x, y), `pixel ${x},${y}`);
+});

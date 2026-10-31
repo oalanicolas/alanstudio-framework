@@ -8,8 +8,8 @@ files are compared byte for byte with the build. API calls go through the authen
 stay in memory during the upload.
 
 usage: hostinger_deploy.py --domain example.com [--project .] [--dist dist/client]
-                           [--spa] [--block-ai-bots] [--origin <IP do servidor>] [--expect NOME=VALOR]
-                           [--dry-run | --verify-only]
+                           [--spa] [--block-ai-bots] [--origin <IP do servidor>]
+                           [--expect NOME=VALOR] [--dry-run | --verify-only]
 
 Before zipping, the build must contain every public variable the domain declares in
 `deploy.env` of workspace.json (build_env.py); otherwise nothing is sent (exit 3).
@@ -129,6 +129,7 @@ def htaccess_from_vercel(cfg: dict, source: str = "vercel.json", spa: bool = Fal
             out.append("  RewriteRule ^ /index.html [L]")
         out.append("</IfModule>")
     return "\n".join(out) + "\n"
+
 
 
 def resolve_dist(project: Path, cfg: dict, dist: str | None) -> Path:

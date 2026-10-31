@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync, spawnSync } from "node:child_process";
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { encodePng } from "../src/png.js";
@@ -57,6 +57,30 @@ test("--papeis vence o sufixo e --lista limita o que é processado", { skip: !ha
   const ruim = spawnSync(process.execPath, [CLI, "textures", src, "--papeis", join(dir, "ruim.json")], { encoding: "utf8" });
   assert.equal(ruim.status, 2);
   assert.match(ruim.stderr, /papel inválido/);
+});
+
+// Defeito: a lista pedia "x_nm.png", o disco tinha "x_NM.png" (o macOS abre os dois) e outra linha tinha "../"; a comparação
+// exata descartou essas linhas sem aviso e o resumo contou só o que sobrou.
+test("--lista normaliza o caminho, aceita a caixa diferente com a grafia da lista e relata linha sem arquivo", { skip: !hasLibavif() && "faltam avifenc/avifdec (libavif)" }, (t) => {
+  const dir = tempDir(t);
+  const src = join(dir, "ativos");
+  const out = join(dir, "leve");
+  mkdirSync(join(src, "mat"), { recursive: true });
+  writeFileSync(join(src, "mat", "a_BC.png"), encodePng(colorTexture(64)));
+  writeFileSync(join(src, "mat", "b_BC.png"), encodePng(colorTexture(64, 3, 9)));
+  writeFileSync(join(dir, "lista.txt"), "malhas/../mat/a_BC.png\nmat/B_bc.png\nmat/nada_BC.png\nmat/muro.gltf\n");
+  const rel = join(dir, "t.json");
+  const saida = node(["textures", src, "--saida", out, "--sem-ssimulacra2", "--lista", join(dir, "lista.txt"), "--relatorio", rel]);
+  assert.match(saida, /2 de 3 processadas \(1 da lista sem arquivo\)/);
+  const r = JSON.parse(readFileSync(rel, "utf8"));
+  assert.deepEqual(r.resultados.map((x) => x.arquivo).sort(), ["mat/B_bc.png", "mat/a_BC.png"]);
+  assert.deepEqual(r.semArquivo, ["mat/nada_BC.png"]);
+  assert.ok(readdirSync(join(out, "mat")).includes("B_bc.avif"), "saída com a grafia da lista");
+  const v = spawnSync(process.execPath, [CLI, "verify", src, "--saida", out, "--sem-ssimulacra2", "--lista", join(dir, "lista.txt"), "--relatorio", join(dir, "v.json")], { encoding: "utf8" });
+  assert.equal(v.status, 1, "verificação com linha sem arquivo não passa");
+  const vr = JSON.parse(readFileSync(join(dir, "v.json"), "utf8"));
+  assert.deepEqual(vr.semArquivo, ["mat/nada_BC.png", "mat/muro.gltf"]);
+  assert.equal(vr.texturas.filter((x) => x.pass).length, 2);
 });
 
 test("comando desconhecido sai com código 2", () => {
